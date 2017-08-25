@@ -27,7 +27,7 @@ Compile: - Please write following command
 
 Run:-
 
-> java Driver       (D should be capital in Driver)
+> java Driver       (Letter 'D' should be capital in Driver)
 
 
 
