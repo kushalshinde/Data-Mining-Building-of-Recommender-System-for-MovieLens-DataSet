@@ -38,14 +38,11 @@ public class FileP implements FilePInterface {
 	}
 
 	public void filewrite(String dataout) throws Exception{
-		int ver=0;
 		File wfile = new File(fileout);	
-		ver=1;
 		writefile = new FileWriter(wfile.getAbsoluteFile(),true);
 		writebuff = new BufferedWriter(writefile);
 		writebuff.write(dataout);
-		ver=2;
-	    writebuff.flush();
+		writebuff.flush();
 		writebuff.close();
 		writefile.close();
 		rbuff.close(); 
