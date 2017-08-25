@@ -6,11 +6,13 @@ public class Driver {
 
 	public static void main(String[] args) throws Exception {
 		int maxrow=944;
-		Integer val = null;
 		int maxcolumn=1683;
 		Double threshold_similarity =0.3;
+		
+		Integer val = null;
 		FilePInterface f = null;
 		AlgoInterface al=new Algorithm(maxcolumn);
+		
 		try {
 			f = new FileP("train_all_txt.txt","output.txt");
 		} catch (Exception e) {
@@ -30,68 +32,54 @@ public class Driver {
         }
 		
 		float[] avgUser  = new float[maxrow];
-		int i=1;
-		int j=1;
-    System.out.println("In process....");
-		while(i<maxrow){
+		
+		
+		System.out.println("In process....");
+		for(int i=1; i<maxrow; i++) {
     		avgUser[i]=al.averageUser(i,maxcolumn,matrixInput);
     		int rownumval=0;
-    		i++;
     	}
     	
-		while(maxcolumn>j){
-			int k=1;
-			int rownum;
-			while(maxcolumn>k){
-				rownum=1;
+		for(int j=1; j<maxcolumn; j++) {
+			for(int k=1; k<maxcolumn; k++) {
 				double sim = al.similarItemFind(maxrow,k,avgUser,j,matrixInput);
-				if(!(sim >= threshold_similarity)){
-					rownum=0;
+				if(threshold_similarity <= sim){
+					al.dataAdd(k, j, null);
 				}
-				else{
-					rownum=1;al.dataAdd(k, j, null);
-				}k++;
-			}j++;
+			}
 		}
-		int m=1;
+		
+		
 		int[][]b = new int[maxrow][maxcolumn];		
-		int numval=0;
-		while(maxrow>m){
-			int n=1;
-			while(n<maxcolumn){
+
+		for(int m=1; m<maxrow; m++) {
+			for(int n=1; n<maxcolumn; n++) {
 				if(!(matrixInput[m][n]==0)){
-					numval=0;
 					b[m][n]=matrixInput[m][n];
 				}
 				else{  
 					List<Integer> value_sim = al.keyValueGet(n);
 					if(!(value_sim!=null)){
-						numval=1;
 						b[m][n]=1;
 			    	}
 					else{
 						Double value_pred = al.totalSumWeighted(value_sim,matrixInput,m,n);
-						numval=2;
 						int val_pr = (int)Math.round(value_pred);
 						if(!(val_pr > 5)&& !(val_pr<=0)){
-							numval=0;
 							b[m][n]=val_pr;
 						}
 						else if(val_pr > 5){
-							numval=1;
 							b[m][n]=5;
 						}
 						else if(val_pr<=0){
-							numval=0;
 							b[m][n]=1;
 						}
 					}				
-				}n++;
-			}m++;
+				}
+			}
 		}
 		
 		al.fileWrite(maxcolumn, b, f, maxrow);
-		numval=0;
 		System.out.println("Output file generated as \"output.txt\"");
 	}
 }
